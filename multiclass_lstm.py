@@ -15,13 +15,13 @@ if __name__ == '__main__':
         learning_rate=2e-3
     )
 
-    logger = TensorBoardLogger("logs_lstm", name="lstm_classifier")
-    checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/class', save_last=True)
+    logger = TensorBoardLogger("logs/logs_lstm", name="lstm_classifier")
+    checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/lstm', save_last=True)
 
     trainer = pl.Trainer(
         accelerator='gpu',
         max_epochs=100,
-        default_root_dir="./checkpoints/class",
+        default_root_dir="./checkpoints/lstm",
         callbacks=[checkpoint_callback],
         logger=logger
     )
