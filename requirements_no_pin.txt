@@ -1,0 +1,10 @@
+gensim
+keras
+matplotlib
+numpy
+pandas
+pytorch_lightning
+torch
+torchmetrics
+tqdm
+transformers
