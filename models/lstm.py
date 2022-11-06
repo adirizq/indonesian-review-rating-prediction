@@ -33,7 +33,7 @@ class LSTM(pl.LightningModule):
         self.linear = nn.Linear(hidden_size, 5)
         self.sigmoid = nn.Sigmoid()
 
-        self.criterion = torch.nn.BCELoss()
+        self.criterion = torch.nn.CrossEntropyLoss()
 
     def forward(self, x):
 
