@@ -1,2 +1,5 @@
 *.model filter=lfs diff=lfs merge=lfs -text
 *.npy filter=lfs diff=lfs merge=lfs -text
+models/w2v/idwiki_word2vec_200_new_lower.model filter=lfs diff=lfs merge=lfs -text
+models/w2v/idwiki_word2vec_200_new_lower.model.trainables.syn1neg.npy filter=lfs diff=lfs merge=lfs -text
+models/w2v/idwiki_word2vec_200_new_lower.model.wv.vectors.npy filter=lfs diff=lfs merge=lfs -text

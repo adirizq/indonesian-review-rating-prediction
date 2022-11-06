@@ -58,8 +58,7 @@ class LSTM(pl.LightningModule):
         _, preds = torch.max(out.data, 1)
 
         accuracy = Accuracy().to(device='cuda')(preds, targets).item()
-        self.log("train accuracy", accuracy, prog_bar=True, logger=True, on_epoch=True, on_step=True)
-        self.log("train loss", loss, prog_bar=True, logger=True, on_epoch=True, on_step=True)
+        self.log_dict({'train loss': loss, 'train accuracy': accuracy}, prog_bar=True, on_epoch=True)
         
         return loss
 
@@ -71,8 +70,7 @@ class LSTM(pl.LightningModule):
         _, preds = torch.max(out.data, 1)
 
         accuracy = Accuracy().to(device='cuda')(preds, targets).item()
-        self.log("validation accuracy", accuracy, prog_bar=True, logger=True, on_epoch=True, on_step=True)
-        self.log("validation loss", loss, prog_bar=True, logger=True, on_epoch=True, on_step=True)
+        self.log_dict({'validation loss': loss, 'validation accuracy': accuracy}, prog_bar=True, on_epoch=True)
 
         return loss
 

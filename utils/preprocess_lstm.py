@@ -114,28 +114,23 @@ class ReviewDataModule(pl.LightningDataModule):
             self.test_data = test_data
 
     def train_dataloader(self):
-        sampler = RandomSampler(self.train_data)
         return DataLoader(
             dataset=self.train_data,
             batch_size=self.batch_size,
-            sampler=sampler,
-            num_workers=3
+            shuffle=True,
+            num_workers=2
         )
 
     def val_dataloader(self):
-        sampler = RandomSampler(self.valid_data)
         return DataLoader(
             dataset=self.valid_data,
             batch_size=self.batch_size,
-            sampler=sampler,
-            num_workers=3
+            num_workers=2
         )
 
     def predict_dataloader(self):
-        sampler = SequentialSampler(self.test_data)
         return DataLoader(
             dataset=self.test_data,
             batch_size=self.batch_size,
-            sampler=sampler,
-            num_workers=3
+            num_workers=2
         )
