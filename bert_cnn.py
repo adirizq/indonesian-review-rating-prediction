@@ -1,7 +1,7 @@
 import pytorch_lightning as pl
 
 from pytorch_lightning.loggers import TensorBoardLogger
-from pytorch_lightning.callbacks import ModelCheckpoint, TQDMProgressBar
+from pytorch_lightning.callbacks import ModelCheckpoint, TQDMProgressBar, EarlyStopping
 from utils.preprocess_bert import ReviewDataModule
 from models.bert_cnn import BertCNN
 
@@ -12,12 +12,14 @@ if __name__ == '__main__':
 
     logger = TensorBoardLogger("logs/logs_bert_cnn", name="bert_cnn_classifier")
     checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/bert_cnn', save_last=True)
+    early_stop_callback = EarlyStopping(monitor='validation loss', min_delta=0.00, check_on_train_epoch_end=1)
+    tqdm_progress_bar = TQDMProgressBar()
 
     trainer = pl.Trainer(
         accelerator='gpu',
         max_epochs=100,
         default_root_dir="./checkpoints/bert_cnn",
-        callbacks=[checkpoint_callback, TQDMProgressBar()],
+        callbacks=[checkpoint_callback, early_stop_callback, tqdm_progress_bar],
         logger=logger,
         log_every_n_steps=5
     )

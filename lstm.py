@@ -1,7 +1,7 @@
 import pytorch_lightning as pl
 
 from pytorch_lightning.loggers import TensorBoardLogger
-from pytorch_lightning.callbacks import ModelCheckpoint, TQDMProgressBar
+from pytorch_lightning.callbacks import ModelCheckpoint, TQDMProgressBar, EarlyStopping
 from utils.preprocess_word2vec import ReviewDataModule
 from models.lstm import LSTM
 
@@ -12,17 +12,18 @@ if __name__ == '__main__':
     model = LSTM(
         word_embedding_weigth=weigths,
         embedding_size=embedding_size,
-        learning_rate=1e-3
     )
 
     logger = TensorBoardLogger("logs/logs_lstm", name="lstm_classifier")
     checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/lstm', save_last=True)
+    early_stop_callback = EarlyStopping(monitor='validation loss', min_delta=0.00, check_on_train_epoch_end=1)
+    tqdm_progress_bar = TQDMProgressBar()
 
     trainer = pl.Trainer(
         accelerator='gpu',
         max_epochs=100,
         default_root_dir="./checkpoints/lstm",
-        callbacks=[checkpoint_callback, TQDMProgressBar()],
+        callbacks=[checkpoint_callback, early_stop_callback, tqdm_progress_bar],
         logger=logger,
         log_every_n_steps=5
     )
