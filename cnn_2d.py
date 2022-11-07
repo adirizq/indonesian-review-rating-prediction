@@ -14,13 +14,13 @@ if __name__ == '__main__':
         embedding_size=embedding_size,
     )
 
-    logger = TensorBoardLogger("logs/logs_cnn", name="cnn_classifier")
-    checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/cnn', save_last=True)
+    logger = TensorBoardLogger("logs/logs_cnn_2d", name="cnn_2d_classifier")
+    checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/cnn_2d', save_last=True)
 
     trainer = pl.Trainer(
         accelerator='gpu',
         max_epochs=100,
-        default_root_dir="./checkpoints/cnn",
+        default_root_dir="./checkpoints/cnn_2d",
         callbacks=[checkpoint_callback, TQDMProgressBar()],
         logger=logger,
         log_every_n_steps=5
