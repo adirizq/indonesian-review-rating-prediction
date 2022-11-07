@@ -38,7 +38,7 @@ class ReviewDataModule(pl.LightningDataModule):
             encoded_lbl[label-1] = 1
 
             tkn = self.tokenizer(text=review,
-                                 max_length=self.max_length,
+                                 max_length=self.max_len,
                                  padding='max_length',
                                  truncation=True)
 
