@@ -2,7 +2,7 @@ import pytorch_lightning as pl
 
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, TQDMProgressBar
-from utils.preprocess_lstm import ReviewDataModule
+from utils.preprocess_word2vec import ReviewDataModule
 from models.lstm import LSTM
 
 if __name__ == '__main__':
