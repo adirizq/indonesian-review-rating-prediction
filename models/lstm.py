@@ -55,11 +55,11 @@ class LSTM(pl.LightningModule):
 
         out = self(reviews)
         loss = self.criterion(out, targets)
-        _, preds = torch.max(out.data, 1)
+        preds = torch.argmax(out, dim=1)
 
         accuracy = Accuracy().to(device='cuda')(preds, targets).item()
         self.log_dict({'train loss': loss, 'train accuracy': accuracy}, prog_bar=True, on_epoch=True)
-        
+
         return loss
 
     def validation_step(self, valid_batch, batch_idx):
@@ -67,7 +67,7 @@ class LSTM(pl.LightningModule):
 
         out = self(reviews)
         loss = self.criterion(out, targets)
-        _, preds = torch.max(out.data, 1)
+        preds = torch.argmax(out, dim=1)
 
         accuracy = Accuracy().to(device='cuda')(preds, targets).item()
         self.log_dict({'validation loss': loss, 'validation accuracy': accuracy}, prog_bar=True, on_epoch=True)
@@ -78,7 +78,6 @@ class LSTM(pl.LightningModule):
         reviews, targets = test_batch
 
         out = self(reviews)
-        _, preds = torch.max(out.data, 1)
+        preds = torch.argmax(out, dim=1)
 
         return {"predictions": preds, "labels": targets}
-
