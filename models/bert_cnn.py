@@ -31,7 +31,7 @@ class BertCNN(pl.LightningModule):
         self.linear = nn.Linear(768, 768)
         self.dropout = nn.Dropout(dropout)
         self.classifier = nn.Linear((out_channels*len(window_sizes)), num_classes)
-        self.tanh=nn.Tanh()
+        self.relu=nn.ReLU()
 
         self.criterion=torch.nn.CrossEntropyLoss()
 
