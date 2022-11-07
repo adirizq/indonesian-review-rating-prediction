@@ -8,21 +8,17 @@ from torchmetrics import Accuracy
 from transformers import BertModel
 
 
-class LSTM(pl.LightningModule):
+class Bert(pl.LightningModule):
     def __init__(self,
-                 hidden_size=128,
                  num_classes=5,
                  learning_rate=1e-3,
-                 num_layers=3,
                  dropout=0.5,
                  ) -> None:
 
-        super(LSTM, self).__init__()
+        super(Bert, self).__init__()
 
         self.lr = learning_rate
         self.output_dim = num_classes
-        self.hidden_dim = hidden_size
-        self.num_layers = num_layers
 
         self.bert = BertModel.from_pretrained("indolem/indobert-base-uncased")
         self.linear = nn.Linear(768, 768)
