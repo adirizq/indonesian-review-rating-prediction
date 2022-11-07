@@ -49,7 +49,7 @@ class Bert(pl.LightningModule):
         x_input_ids, x_token_type_ids, x_attention_mask, y = train_batch
 
         out = self(x_input_ids, x_token_type_ids, x_attention_mask)
-        loss = self.criterion(out, y)
+        loss = self.criterion(out, y.float())
         preds = torch.argmax(out)
         targets = torch.argmax(y)
 
@@ -62,7 +62,7 @@ class Bert(pl.LightningModule):
         x_input_ids, x_token_type_ids, x_attention_mask, y = valid_batch
 
         out = self(x_input_ids, x_token_type_ids, x_attention_mask)
-        loss = self.criterion(out, y)
+        loss = self.criterion(out, y.float())
         preds = torch.argmax(out)
         targets = torch.argmax(y)
 
