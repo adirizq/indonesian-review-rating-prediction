@@ -30,7 +30,8 @@ class ReviewDataModule(pl.LightningDataModule):
 
         x_input_ids, x_token_type_ids, x_attention_mask, y = [], [], [], []
 
-        for i, tr_d in enumerate(tqdm(data.values.tolist())):
+        print('Tokenizing Data...')
+        for i, tr_d in enumerate(tqdm(data.values.tolist(), desc='Tokenizing Data')):
             review = tr_d[0]
             label = tr_d[1]
 
@@ -46,6 +47,7 @@ class ReviewDataModule(pl.LightningDataModule):
             x_token_type_ids.append(tkn['token_type_ids'])
             x_attention_mask.append(tkn['attention_mask'])
             y.append(encoded_lbl)
+        print('[Tokenizing Completed]\n')
 
         x_input_ids = torch.tensor(x_input_ids)
         x_token_type_ids = torch.tensor(x_token_type_ids)

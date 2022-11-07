@@ -30,11 +30,11 @@ class Bert(pl.LightningModule):
 
     def forward(self, input_ids, attention_mask, token_type_ids):
 
-        bert_out = self.l1(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
+        bert_out = self.bert(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
         hidden_state = bert_out[0]
 
         pooler = hidden_state[:, 0]
-        pooler = self.pre_classifier(pooler)
+        pooler = self.linear(pooler)
         pooler = self.tanh(pooler)
         pooler = self.dropout(pooler)
         output = self.classifier(pooler)
