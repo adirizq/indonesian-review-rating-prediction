@@ -50,8 +50,8 @@ class Bert(pl.LightningModule):
 
         out = self(x_input_ids, x_token_type_ids, x_attention_mask)
         loss = self.criterion(out, y.float())
-        preds = torch.argmax(out)
-        targets = torch.argmax(y)
+        preds = torch.argmax(out, dim=1)
+        targets = torch.argmax(y, dim=1)
 
         accuracy = Accuracy().to(device='cuda')(preds, targets).item()
         self.log_dict({'train loss': loss, 'train accuracy': accuracy}, prog_bar=True, on_epoch=True)
@@ -63,8 +63,8 @@ class Bert(pl.LightningModule):
 
         out = self(x_input_ids, x_token_type_ids, x_attention_mask)
         loss = self.criterion(out, y.float())
-        preds = torch.argmax(out)
-        targets = torch.argmax(y)
+        preds = torch.argmax(out, dim=1)
+        targets = torch.argmax(y, dim=1)
 
         accuracy = Accuracy().to(device='cuda')(preds, targets).item()
         self.log_dict({'validation loss': loss, 'validation accuracy': accuracy}, prog_bar=True, on_epoch=True)
@@ -75,7 +75,7 @@ class Bert(pl.LightningModule):
         x_input_ids, x_token_type_ids, x_attention_mask, y = test_batch
 
         out = self(x_input_ids, x_token_type_ids, x_attention_mask)
-        preds = torch.argmax(out)
-        targets = torch.argmax(y)
+        preds = torch.argmax(out, dim=1)
+        targets = torch.argmax(y, dim=1)
 
         return {"predictions": preds, "labels": targets}
