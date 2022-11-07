@@ -31,72 +31,67 @@ class BertCNN(pl.LightningModule):
         self.linear = nn.Linear(768, 768)
         self.dropout = nn.Dropout(dropout)
         self.classifier = nn.Linear((out_channels*len(window_sizes)), num_classes)
-        self.relu=nn.ReLU()
+        self.relu = nn.ReLU()
 
-        self.criterion=torch.nn.CrossEntropyLoss()
+        self.criterion = torch.nn.CrossEntropyLoss()
 
     def forward(self, input_ids, attention_mask, token_type_ids):
 
-        bert_out=self.bert(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
+        bert_out = self.bert(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
 
-        bert_hidden_state=bert_out[2]
-        bert_hidden_state=torch.stack(bert_hidden_state, dim=1)
-        prepared_conv_input=bert_hidden_state[:, -8:]
+        bert_hidden_state = bert_out[2]
+        bert_hidden_state = torch.stack(bert_hidden_state, dim=1)
+        prepared_conv_input = bert_hidden_state[:, -8:]
 
-        out_conv=[]
+        out_conv = []
 
         for conv in self.conv2d:
-            x=conv(prepared_conv_input)
-            x=self.relu(x)
-            x=x.squeeze(-1)
-            x=F.max_pool1d(x, x.size(2))
+            x = conv(prepared_conv_input)
+            x = self.relu(x)
+            x = x.squeeze(-1)
+            x = F.max_pool1d(x, x.size(2))
             out_conv.append(x)
 
-        logits=torch.cat(out_conv, 1)
-        logits=logits.squeeze(-1)
+        logits = torch.cat(out_conv, 1)
+        logits = logits.squeeze(-1)
 
-        logits=self.dropout(logits)
-        logits=self.classifier(logits)
+        logits = self.dropout(logits)
+        logits = self.classifier(logits)
 
         return logits
 
     def configure_optimizers(self):
-        optimizer=torch.optim.Adam(self.parameters(), lr=self.lr)
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
         return optimizer
 
     def training_step(self, train_batch, batch_idx):
-        x_input_ids, x_token_type_ids, x_attention_mask, y=train_batch
-        targets=torch.argmax(y, dim=1)
+        x_input_ids, x_token_type_ids, x_attention_mask, targets = train_batch
 
-        out=self(x_input_ids, x_token_type_ids, x_attention_mask)
-        loss=self.criterion(out, targets)
+        out = self(x_input_ids, x_token_type_ids, x_attention_mask)
+        loss = self.criterion(out, targets)
+        preds = torch.argmax(out, dim=1)
 
-        preds=torch.argmax(out, dim=1)
-
-        accuracy=Accuracy().to(device='cuda')(preds, targets).item()
+        accuracy = Accuracy().to(device='cuda')(preds, targets).item()
         self.log_dict({'train loss': loss, 'train accuracy': accuracy}, prog_bar=True, on_epoch=True)
 
         return loss
 
     def validation_step(self, valid_batch, batch_idx):
-        x_input_ids, x_token_type_ids, x_attention_mask, y=valid_batch
-        targets=torch.argmax(y, dim=1)
+        x_input_ids, x_token_type_ids, x_attention_mask, targets = valid_batch
 
-        out=self(x_input_ids, x_token_type_ids, x_attention_mask)
-        loss=self.criterion(out, targets)
+        out = self(x_input_ids, x_token_type_ids, x_attention_mask)
+        loss = self.criterion(out, targets)
+        preds = torch.argmax(out, dim=1)
 
-        preds=torch.argmax(out, dim=1)
-
-        accuracy=Accuracy().to(device='cuda')(preds, targets).item()
+        accuracy = Accuracy().to(device='cuda')(preds, targets).item()
         self.log_dict({'validation loss': loss, 'validation accuracy': accuracy}, prog_bar=True, on_epoch=True)
 
         return loss
 
     def predict_step(self, test_batch, batch_idx):
-        x_input_ids, x_token_type_ids, x_attention_mask, y=test_batch
+        x_input_ids, x_token_type_ids, x_attention_mask, targets = test_batch
 
-        out=self(x_input_ids, x_token_type_ids, x_attention_mask)
-        preds=torch.argmax(out, dim=1)
-        targets=torch.argmax(y, dim=1)
+        out = self(x_input_ids, x_token_type_ids, x_attention_mask)
+        preds = torch.argmax(out, dim=1)
 
         return {"predictions": preds, "labels": targets}

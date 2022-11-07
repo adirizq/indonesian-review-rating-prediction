@@ -26,7 +26,7 @@ class Bert(pl.LightningModule):
         self.classifier = nn.Linear(768, num_classes)
         self.tanh = nn.Tanh()
 
-        self.criterion = torch.nn.BCEWithLogitsLoss()
+        self.criterion = torch.nn.CrossEntropyLoss()
 
     def forward(self, input_ids, attention_mask, token_type_ids):
 
@@ -46,12 +46,11 @@ class Bert(pl.LightningModule):
         return optimizer
 
     def training_step(self, train_batch, batch_idx):
-        x_input_ids, x_token_type_ids, x_attention_mask, y = train_batch
+        x_input_ids, x_token_type_ids, x_attention_mask, targets = train_batch
 
         out = self(x_input_ids, x_token_type_ids, x_attention_mask)
-        loss = self.criterion(out, y.float())
+        loss = self.criterion(out, targets)
         preds = torch.argmax(out, dim=1)
-        targets = torch.argmax(y, dim=1)
 
         accuracy = Accuracy().to(device='cuda')(preds, targets).item()
         self.log_dict({'train loss': loss, 'train accuracy': accuracy}, prog_bar=True, on_epoch=True)
@@ -59,12 +58,11 @@ class Bert(pl.LightningModule):
         return loss
 
     def validation_step(self, valid_batch, batch_idx):
-        x_input_ids, x_token_type_ids, x_attention_mask, y = valid_batch
+        x_input_ids, x_token_type_ids, x_attention_mask, targets = valid_batch
 
         out = self(x_input_ids, x_token_type_ids, x_attention_mask)
-        loss = self.criterion(out, y.float())
+        loss = self.criterion(out, targets)
         preds = torch.argmax(out, dim=1)
-        targets = torch.argmax(y, dim=1)
 
         accuracy = Accuracy().to(device='cuda')(preds, targets).item()
         self.log_dict({'validation loss': loss, 'validation accuracy': accuracy}, prog_bar=True, on_epoch=True)
@@ -72,10 +70,9 @@ class Bert(pl.LightningModule):
         return loss
 
     def predict_step(self, test_batch, batch_idx):
-        x_input_ids, x_token_type_ids, x_attention_mask, y = test_batch
+        x_input_ids, x_token_type_ids, x_attention_mask, targets = test_batch
 
         out = self(x_input_ids, x_token_type_ids, x_attention_mask)
         preds = torch.argmax(out, dim=1)
-        targets = torch.argmax(y, dim=1)
 
         return {"predictions": preds, "labels": targets}
