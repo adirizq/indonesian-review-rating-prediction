@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
     logger = TensorBoardLogger("logs/logs_bert", name="bert_classifier")
     checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/bert', save_last=True)
-    early_stop_callback = EarlyStopping(monitor='validation loss', min_delta=0.00, check_on_train_epoch_end=1)
+    early_stop_callback = EarlyStopping(monitor='validation loss', min_delta=0.00, check_on_train_epoch_end=1, patience=10)
     tqdm_progress_bar = TQDMProgressBar()
 
     trainer = pl.Trainer(
