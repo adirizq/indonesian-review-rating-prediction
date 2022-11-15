@@ -3,6 +3,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, TQDMProgressBar, EarlyStopping
 from utils.preprocess_word2vec import ReviewDataModule
+from utils.process_tensorboard_log import save_graph
 from models.lstm import LSTM
 
 if __name__ == '__main__':
@@ -32,4 +33,7 @@ if __name__ == '__main__':
 
     trainer.fit(model, datamodule=data_module)
     trainer.test(datamodule=data_module, ckpt_path='best')
+
+    save_graph('logs/lstm', 'LSTM', 'results/lstm')
+
 

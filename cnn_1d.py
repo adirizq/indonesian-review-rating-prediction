@@ -3,11 +3,12 @@ import pytorch_lightning as pl
 from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, TQDMProgressBar, EarlyStopping
 from utils.preprocess_word2vec import ReviewDataModule
+from utils.process_tensorboard_log import save_graph
 from models.cnn_1d import CNN1D
 
 if __name__ == '__main__':
     pl.seed_everything(99, workers=True)
-    
+
     data_module = ReviewDataModule(max_len=100, batch_size=128)
     weigths, vocab_size, embedding_size = data_module.word_embedding()
 
@@ -33,3 +34,4 @@ if __name__ == '__main__':
     trainer.fit(model, datamodule=data_module)
     trainer.test(datamodule=data_module, ckpt_path='best')
 
+    save_graph('logs/cnn_1d', 'One Dimensional CNN', 'results/cnn_1d')
