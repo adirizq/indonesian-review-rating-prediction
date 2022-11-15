@@ -80,7 +80,7 @@ class ReviewDataModule(pl.LightningDataModule):
         if stage == "fit":
             self.train_data = train_data
             self.valid_data = valid_data
-        elif stage == "predict":
+        elif stage == "test":
             self.test_data = test_data
 
     def train_dataloader(self):
