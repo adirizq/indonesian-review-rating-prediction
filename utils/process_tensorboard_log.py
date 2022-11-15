@@ -31,6 +31,9 @@ def save_graph(log_path, model_name, save_path):
     except Exception:
         print("Event file possibly corrupt: {}".format(directory_list[0]['dir']))
         traceback.print_exc()
+
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
     
     train_loss = data.loc[data['metric'] == 'train_loss_epoch']['value']
     train_acc = data.loc[data['metric'] == 'train_acc_epoch']['value']
