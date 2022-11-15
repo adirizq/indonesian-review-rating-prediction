@@ -16,7 +16,7 @@ if __name__ == '__main__':
         embedding_size=embedding_size,
     )
 
-    logger = TensorBoardLogger('logs/lstm')
+    tensor_board_logger = TensorBoardLogger('logs', name='lstm')
     checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/lstm', save_last=True)
     early_stop_callback = EarlyStopping(monitor='val_loss', min_delta=0.00, check_on_train_epoch_end=1, patience=10)
     tqdm_progress_bar = TQDMProgressBar()
@@ -26,7 +26,7 @@ if __name__ == '__main__':
         max_epochs=100,
         default_root_dir="./checkpoints/lstm",
         callbacks=[checkpoint_callback, early_stop_callback, tqdm_progress_bar],
-        logger=logger,
+        logger=tensor_board_logger,
         log_every_n_steps=5
     )
 
