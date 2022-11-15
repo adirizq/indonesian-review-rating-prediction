@@ -25,4 +25,3 @@ if __name__ == '__main__':
     )
 
     trainer.fit(model, datamodule=data_module)
-    # data = trainer.predict(model=model, datamodule=data_module)

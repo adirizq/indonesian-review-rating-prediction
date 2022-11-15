@@ -72,7 +72,7 @@ class BertCNN(pl.LightningModule):
         preds = torch.argmax(out, dim=1)
 
         accuracy = Accuracy().to(device='cuda')(preds, targets).item()
-        self.log_dict({'train loss': loss, 'train accuracy': accuracy}, prog_bar=True, on_epoch=True)
+        self.log_dict({'train_loss': loss, 'train_acc': accuracy}, prog_bar=True, on_epoch=True)
 
         return loss
 
@@ -84,14 +84,18 @@ class BertCNN(pl.LightningModule):
         preds = torch.argmax(out, dim=1)
 
         accuracy = Accuracy().to(device='cuda')(preds, targets).item()
-        self.log_dict({'validation loss': loss, 'validation accuracy': accuracy}, prog_bar=True, on_epoch=True)
+        self.log_dict({'val_loss': loss, 'val_acc': accuracy}, prog_bar=True, on_epoch=True)
 
         return loss
 
-    def predict_step(self, test_batch, batch_idx):
+    def test_step(self, test_batch, batch_idx):
         x_input_ids, x_token_type_ids, x_attention_mask, targets = test_batch
 
         out = self(x_input_ids, x_token_type_ids, x_attention_mask)
+        loss = self.criterion(out, targets)
         preds = torch.argmax(out, dim=1)
 
-        return {"predictions": preds, "labels": targets}
+        accuracy = Accuracy().to(device='cuda')(preds, targets).item()
+        self.log_dict({'test_loss': loss, 'test_acc': accuracy}, prog_bar=True, on_epoch=True)
+
+        return loss
