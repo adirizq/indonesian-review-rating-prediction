@@ -6,6 +6,8 @@ from utils.preprocess_bert import ReviewDataModule
 from models.bert_cnn import BertCNN
 
 if __name__ == '__main__':
+    pl.seed_everything(99, workers=True)
+    
     data_module = ReviewDataModule(max_len=100, batch_size=128)
 
     model = BertCNN()

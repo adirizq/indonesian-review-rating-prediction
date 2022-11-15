@@ -6,6 +6,8 @@ from utils.preprocess_word2vec import ReviewDataModule
 from models.cnn_2d import CNN2D
 
 if __name__ == '__main__':
+    pl.seed_everything(99, workers=True)
+    
     data_module = ReviewDataModule(max_len=100, batch_size=128)
     weigths, vocab_size, embedding_size = data_module.word_embedding()
 
