@@ -1,4 +1,5 @@
 import sys
+import multiprocessing
 import torch
 import torch.nn as nn
 import pytorch_lightning as pl
@@ -116,19 +117,19 @@ class ReviewDataModule(pl.LightningDataModule):
             dataset=self.train_data,
             batch_size=self.batch_size,
             shuffle=True,
-            num_workers=2
+            num_workers=multiprocessing.cpu_count()
         )
 
     def val_dataloader(self):
         return DataLoader(
             dataset=self.valid_data,
             batch_size=self.batch_size,
-            num_workers=2
+            num_workers=multiprocessing.cpu_count()
         )
 
-    def predict_dataloader(self):
+    def test_dataloader(self):
         return DataLoader(
             dataset=self.test_data,
             batch_size=self.batch_size,
-            num_workers=2
+            num_workers=multiprocessing.cpu_count()
         )
