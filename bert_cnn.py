@@ -13,7 +13,7 @@ if __name__ == '__main__':
     model = BertCNN()
 
     tensor_board_logger = TensorBoardLogger('logs', name='cnn_1d')
-    checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/bert_cnn', save_last=True)
+    checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/bert_cnn', monitor='val_loss')
     early_stop_callback = EarlyStopping(monitor='val_loss', min_delta=0.00, check_on_train_epoch_end=1, patience=10)
     tqdm_progress_bar = TQDMProgressBar()
 
@@ -28,4 +28,3 @@ if __name__ == '__main__':
 
     trainer.fit(model, datamodule=data_module)
     trainer.test(datamodule=data_module, ckpt_path='best')
-
