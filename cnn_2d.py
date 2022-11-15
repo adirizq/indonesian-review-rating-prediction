@@ -31,3 +31,5 @@ if __name__ == '__main__':
     )
 
     trainer.fit(model, datamodule=data_module)
+    trainer.test(datamodule=data_module, ckpt_path='best')
+
