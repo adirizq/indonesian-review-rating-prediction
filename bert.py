@@ -7,14 +7,14 @@ from models.bert import Bert
 
 if __name__ == '__main__':
     pl.seed_everything(99, workers=True)
-    
+
     data_module = ReviewDataModule(max_len=100, batch_size=128)
 
     model = Bert()
 
-    logger = TensorBoardLogger("logs/logs_bert", name="bert_classifier")
+    logger = TensorBoardLogger('logs/bert')
     checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/bert', save_last=True)
-    early_stop_callback = EarlyStopping(monitor='validation loss', min_delta=0.00, check_on_train_epoch_end=1, patience=10)
+    early_stop_callback = EarlyStopping(monitor='val_loss', min_delta=0.00, check_on_train_epoch_end=1, patience=10)
     tqdm_progress_bar = TQDMProgressBar()
 
     trainer = pl.Trainer(

@@ -16,9 +16,9 @@ if __name__ == '__main__':
         embedding_size=embedding_size,
     )
 
-    logger = TensorBoardLogger("logs/logs_cnn_1d", name="cnn_1d_classifier")
+    logger = TensorBoardLogger('logs/cnn_1d')
     checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/cnn_1d', save_last=True)
-    early_stop_callback = EarlyStopping(monitor='validation loss', min_delta=0.00, check_on_train_epoch_end=1, patience=10)
+    early_stop_callback = EarlyStopping(monitor='val_loss', min_delta=0.00, check_on_train_epoch_end=1, patience=10)
     tqdm_progress_bar = TQDMProgressBar()
 
     trainer = pl.Trainer(

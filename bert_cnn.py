@@ -12,9 +12,9 @@ if __name__ == '__main__':
 
     model = BertCNN()
 
-    logger = TensorBoardLogger("logs/logs_bert_cnn", name="bert_cnn_classifier")
+    logger = TensorBoardLogger('logs/bert_cnn')
     checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/bert_cnn', save_last=True)
-    early_stop_callback = EarlyStopping(monitor='validation loss', min_delta=0.00, check_on_train_epoch_end=1, patience=10)
+    early_stop_callback = EarlyStopping(monitor='val_loss', min_delta=0.00, check_on_train_epoch_end=1, patience=10)
     tqdm_progress_bar = TQDMProgressBar()
 
     trainer = pl.Trainer(
