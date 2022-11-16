@@ -21,25 +21,23 @@ class Bert(pl.LightningModule):
         self.output_dim = num_classes
 
         self.bert = BertModel.from_pretrained("indolem/indobert-base-uncased")
-        self.linear = nn.Linear(768, 768)
+        self.linear = nn.Linear(768, 512)
         self.dropout = nn.Dropout(dropout)
-        self.classifier = nn.Linear(768, num_classes)
-        self.tanh = nn.Tanh()
+        self.classifier = nn.Linear(512, num_classes)
+        self.relu = nn.ReLU()
 
         self.criterion = torch.nn.CrossEntropyLoss()
 
     def forward(self, input_ids, attention_mask, token_type_ids):
 
-        bert_out = self.bert(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
-        hidden_state = bert_out[0]
+        _, cls_hs = self.bert(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
 
-        pooler = hidden_state[:, 0]
-        pooler = self.linear(pooler)
-        pooler = self.tanh(pooler)
-        pooler = self.dropout(pooler)
-        output = self.classifier(pooler)
+        out = self.linear(cls_hs)
+        out = self.relu(out)
+        out = self.dropout(out)
+        out = self.classifier(out)
 
-        return output
+        return out
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
