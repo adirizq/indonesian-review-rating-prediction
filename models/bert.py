@@ -30,7 +30,7 @@ class Bert(pl.LightningModule):
 
     def forward(self, input_ids, attention_mask, token_type_ids):
 
-        _, cls_hs = self.bert(input_ids=input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids)
+        _, cls_hs = self.bert(input_ids=input_ids, attention_mask=attention_mask).to_tuple()
 
         out = self.linear(cls_hs)
         out = self.relu(out)
