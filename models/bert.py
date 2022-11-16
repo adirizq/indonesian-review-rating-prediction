@@ -24,7 +24,7 @@ class Bert(pl.LightningModule):
         self.linear = nn.Linear(768, 512)
         self.dropout = nn.Dropout(dropout)
         self.classifier = nn.Linear(512, num_classes)
-        self.relu = nn.ReLU()
+        self.tanh = nn.Tanh()
 
         self.criterion = torch.nn.CrossEntropyLoss()
 
@@ -33,7 +33,7 @@ class Bert(pl.LightningModule):
         _, cls_hs = self.bert(input_ids=input_ids, attention_mask=attention_mask).to_tuple()
 
         out = self.linear(cls_hs)
-        out = self.relu(out)
+        out = self.tanh(out)
         out = self.dropout(out)
         out = self.classifier(out)
 
