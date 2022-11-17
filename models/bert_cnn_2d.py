@@ -8,7 +8,7 @@ from torchmetrics import Accuracy
 from transformers import BertModel
 
 
-class BertCNN(pl.LightningModule):
+class BertCNN2D(pl.LightningModule):
     def __init__(self,
                  num_classes=5,
                  learning_rate=1e-3,
@@ -19,7 +19,7 @@ class BertCNN(pl.LightningModule):
                  window_sizes=[3, 4, 5],
                  ) -> None:
 
-        super(BertCNN, self).__init__()
+        super(BertCNN2D, self).__init__()
 
         self.lr = learning_rate
         self.output_dim = num_classes

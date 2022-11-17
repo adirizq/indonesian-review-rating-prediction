@@ -4,18 +4,18 @@ from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, TQDMProgressBar, EarlyStopping
 from utils.preprocess_bert import ReviewDataModule
 from utils.process_tensorboard_log import save_graph
-from models.bert_cnn import BertCNN
+from models.bert_cnn_2d import BertCNN2D
 
 if __name__ == '__main__':
     pl.seed_everything(99, workers=True)
 
-    data_module = ReviewDataModule(max_len=100, batch_size=128)
+    data_module = ReviewDataModule(max_len=100, batch_size=32)
 
-    model = BertCNN()
+    model = BertCNN2D(learning_rate=2e-5)
 
     tensor_board_logger = TensorBoardLogger('logs', name='bert_cnn')
     checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/bert_cnn', monitor='val_loss')
-    early_stop_callback = EarlyStopping(monitor='val_loss', min_delta=0.00, check_on_train_epoch_end=1, patience=10)
+    early_stop_callback = EarlyStopping(monitor='val_loss', min_delta=0.00, check_on_train_epoch_end=1, patience=5)
     tqdm_progress_bar = TQDMProgressBar()
 
     trainer = pl.Trainer(
