@@ -25,7 +25,7 @@ class BertCNN1D(pl.LightningModule):
         self.output_dim = num_classes
         self.out_channels = out_channels
 
-        self.bert = BertModel.from_pretrained("indolem/indobert-base-uncased", output_hidden_states=True)
+        self.bert = BertModel.from_pretrained("indolem/indobert-base-uncased")
         self.conv1d = nn.ModuleList([
             nn.Conv1d(in_channels=embedding_size, out_channels=out_channels, kernel_size=window_size, padding=(window_size-1)) for window_size in window_sizes
         ])
