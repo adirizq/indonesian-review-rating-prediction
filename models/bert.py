@@ -4,7 +4,7 @@ import pytorch_lightning as pl
 
 from torch import nn
 from torch.nn import functional as F
-from torchmetrics import Accuracy
+from sklearn.metrics import classification_report
 from transformers import BertModel
 
 
@@ -50,8 +50,23 @@ class Bert(pl.LightningModule):
         loss = self.criterion(out, targets)
         preds = torch.argmax(out, dim=1)
 
-        accuracy = Accuracy().to(device='cuda')(preds, targets).item()
-        self.log_dict({'train_loss': loss, 'train_acc': accuracy}, prog_bar=True, on_epoch=True)
+        report = classification_report(targets.cpu(), preds.cpu(), labels=[0, 1, 2, 3, 4], output_dict=True, zero_division=0)
+
+        try:
+            acc = report['accuracy']
+        except KeyError:
+            acc = report['micro avg']['f1-score']
+
+        self.log_dict({'train_loss': loss,
+                       'train_acc': acc,
+                       'train_f1_macro': report['macro avg']['f1-score'],
+                       'train_f1_weighted': report['weighted avg']['f1-score'],
+                       'train_f1_rating_1': report['0']['f1-score'],
+                       'train_f1_rating_2': report['1']['f1-score'],
+                       'train_f1_rating_3': report['2']['f1-score'],
+                       'train_f1_rating_4': report['3']['f1-score'],
+                       'train_f1_rating_5': report['4']['f1-score'],
+                       }, prog_bar=False, on_epoch=True)
 
         return loss
 
@@ -62,8 +77,23 @@ class Bert(pl.LightningModule):
         loss = self.criterion(out, targets)
         preds = torch.argmax(out, dim=1)
 
-        accuracy = Accuracy().to(device='cuda')(preds, targets).item()
-        self.log_dict({'val_loss': loss, 'val_acc': accuracy}, prog_bar=True, on_epoch=True)
+        report = classification_report(targets.cpu(), preds.cpu(), labels=[0, 1, 2, 3, 4], output_dict=True, zero_division=0)
+
+        try:
+            acc = report['accuracy']
+        except KeyError:
+            acc = report['micro avg']['f1-score']
+
+        self.log_dict({'val_loss': loss,
+                       'val_acc': acc,
+                       'val_f1_macro': report['macro avg']['f1-score'],
+                       'val_f1_weighted': report['weighted avg']['f1-score'],
+                       'val_f1_rating_1': report['0']['f1-score'],
+                       'val_f1_rating_2': report['1']['f1-score'],
+                       'val_f1_rating_3': report['2']['f1-score'],
+                       'val_f1_rating_4': report['3']['f1-score'],
+                       'val_f1_rating_5': report['4']['f1-score'],
+                       }, prog_bar=True, on_epoch=True)
 
         return loss
 
@@ -74,7 +104,22 @@ class Bert(pl.LightningModule):
         loss = self.criterion(out, targets)
         preds = torch.argmax(out, dim=1)
 
-        accuracy = Accuracy().to(device='cuda')(preds, targets).item()
-        self.log_dict({'test_loss': loss, 'test_acc': accuracy}, prog_bar=True, on_epoch=True)
+        report = classification_report(targets.cpu(), preds.cpu(), labels=[0, 1, 2, 3, 4], output_dict=True, zero_division=0)
+
+        try:
+            acc = report['accuracy']
+        except KeyError:
+            acc = report['micro avg']['f1-score']
+
+        self.log_dict({'test_loss': loss,
+                       'test_acc': acc,
+                       'test_f1_macro': report['macro avg']['f1-score'],
+                       'test_f1_weighted': report['weighted avg']['f1-score'],
+                       'test_f1_rating_1': report['0']['f1-score'],
+                       'test_f1_rating_2': report['1']['f1-score'],
+                       'test_f1_rating_3': report['2']['f1-score'],
+                       'test_f1_rating_4': report['3']['f1-score'],
+                       'test_f1_rating_5': report['4']['f1-score'],
+                       }, prog_bar=True, on_epoch=True)
 
         return loss
