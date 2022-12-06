@@ -3,3 +3,4 @@ logs/
 .ipynb_checkpoints/
 checkpoints/
 /playground
+models/w2v
