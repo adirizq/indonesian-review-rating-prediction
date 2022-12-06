@@ -5,6 +5,9 @@ import torch.nn as nn
 import pytorch_lightning as pl
 import pandas as pd
 import numpy as np
+import os
+import zipfile
+import urllib
 
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 from transformers import BertTokenizer
@@ -23,6 +26,15 @@ class ReviewDataModule(pl.LightningDataModule):
 
         self.dataset_dir = 'datasets'
         self.tokenizer = BertTokenizer.from_pretrained('indolem/indobert-base-uncased')
+
+        if not os.path.exists('models/w2v/idwiki_word2vec_200_new_lower.model'):
+            url = 'https://github.com/adirizq/data/releases/download/w2v/w2v_weight.zip'
+            filename = url.split('/')[-1]
+
+            urllib.request.urlretrieve(url, filename)
+
+            with zipfile.ZipFile(filename, 'r') as zip_ref:
+                zip_ref.extractall('models/w2v')
 
     def load_data(self):
         dataset = pd.read_csv(f"{self.dataset_dir}/preprocessed_reviews.csv")
