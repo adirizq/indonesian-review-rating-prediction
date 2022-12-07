@@ -1,4 +1,5 @@
 import os
+import sys
 import traceback
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -97,17 +98,76 @@ def extract_data(log_path):
 
     train_loss = data.loc[data['metric'] == 'train_loss_epoch']['value']
     train_acc = data.loc[data['metric'] == 'train_acc_epoch']['value']
+    train_f1_macro = data.loc[data['metric'] == 'train_f1_macro_epoch']['value']
+    train_f1_weighted = data.loc[data['metric'] == 'train_f1_weighted_epoch']['value']
+    train_f1_rating_1 = data.loc[data['metric'] == 'train_f1_rating_1_epoch']['value']
+    train_f1_rating_2 = data.loc[data['metric'] == 'train_f1_rating_2_epoch']['value']
+    train_f1_rating_3 = data.loc[data['metric'] == 'train_f1_rating_3_epoch']['value']
+    train_f1_rating_4 = data.loc[data['metric'] == 'train_f1_rating_4_epoch']['value']
+    train_f1_rating_5 = data.loc[data['metric'] == 'train_f1_rating_5_epoch']['value']
+
     val_loss = data.loc[data['metric'] == 'val_loss']['value']
     val_acc = data.loc[data['metric'] == 'val_acc']['value']
+    val_f1_macro = data.loc[data['metric'] == 'val_f1_macro']['value']
+    val_f1_weighted = data.loc[data['metric'] == 'val_f1_weighted']['value']
+    val_f1_rating_1 = data.loc[data['metric'] == 'val_f1_rating_1']['value']
+    val_f1_rating_2 = data.loc[data['metric'] == 'val_f1_rating_2']['value']
+    val_f1_rating_3 = data.loc[data['metric'] == 'val_f1_rating_3']['value']
+    val_f1_rating_4 = data.loc[data['metric'] == 'val_f1_rating_4']['value']
+    val_f1_rating_5 = data.loc[data['metric'] == 'val_f1_rating_5']['value']
+
     test_loss = data.loc[data['metric'] == 'test_loss']['value'][0]
     test_acc = data.loc[data['metric'] == 'test_acc']['value'][0]
+    test_f1_macro = data.loc[data['metric'] == 'test_f1_macro']['value'][0]
+    test_f1_weighted = data.loc[data['metric'] == 'test_f1_weighted']['value'][0]
+    test_f1_rating_1 = data.loc[data['metric'] == 'test_f1_rating_1']['value'][0]
+    test_f1_rating_2 = data.loc[data['metric'] == 'test_f1_rating_2']['value'][0]
+    test_f1_rating_3 = data.loc[data['metric'] == 'test_f1_rating_3']['value'][0]
+    test_f1_rating_4 = data.loc[data['metric'] == 'test_f1_rating_4']['value'][0]
+    test_f1_rating_5 = data.loc[data['metric'] == 'test_f1_rating_5']['value'][0]
 
-    return train_loss, train_acc, val_loss, val_acc, test_loss, test_acc
+    train_data = pd.DataFrame({
+        'train_loss': train_loss,
+        'train_acc': train_acc,
+        'train_f1_macro': train_f1_macro,
+        'train_f1_weighted': train_f1_weighted,
+        'train_f1_rating_1': train_f1_rating_1,
+        'train_f1_rating_2': train_f1_rating_2,
+        'train_f1_rating_3': train_f1_rating_3,
+        'train_f1_rating_4': train_f1_rating_4,
+        'train_f1_rating_5': train_f1_rating_5,
+    })
+
+    val_data = pd.DataFrame({
+        'val_loss': val_loss,
+        'val_acc': val_acc,
+        'val_f1_macro': val_f1_macro,
+        'val_f1_weighted': val_f1_weighted,
+        'val_f1_rating_1': val_f1_rating_1,
+        'val_f1_rating_2': val_f1_rating_2,
+        'val_f1_rating_3': val_f1_rating_3,
+        'val_f1_rating_4': val_f1_rating_4,
+        'val_f1_rating_5': val_f1_rating_5,
+    })
+
+    test_data = {
+        'test_loss': test_loss,
+        'test_acc': test_acc,
+        'test_f1_macro': test_f1_macro,
+        'test_f1_weighted': test_f1_weighted,
+        'test_f1_rating_1': test_f1_rating_1,
+        'test_f1_rating_2': test_f1_rating_2,
+        'test_f1_rating_3': test_f1_rating_3,
+        'test_f1_rating_4': test_f1_rating_4,
+        'test_f1_rating_5': test_f1_rating_5,
+    }
+
+    return train_data, val_data, test_data
 
 def save_comparison_graph(models, graph_name):
     for model in models:
-        train_loss, train_acc, val_loss, val_acc, test_loss, test_acc = extract_data(model['dir'])
-        model.update(train_loss=train_loss, train_acc=train_acc, val_loss=val_loss, val_acc=val_acc, test_loss=test_loss, test_acc=test_acc)
+        train_data, val_data, test_data = extract_data(model['dir'])
+        model.update(train_loss=train_data['train_loss'], train_acc=train_data['train_acc'], val_loss=val_data['val_loss'], val_acc=val_data['val_acc'], test_loss=test_data['test_loss'], test_acc=test_data['test_acc'])
 
     fig, (loss, acc) = plt.subplots(nrows=2, ncols=2, figsize=(14, 12))
     for model in models:
