@@ -20,9 +20,9 @@ from tqdm import tqdm
 class Word2VecDataModule(pl.LightningDataModule):
     def __init__(self, max_len=100, batch_size=128, recreate=False):
         super(Word2VecDataModule, self).__init__()
-        self.max_len = max_len
-        self.batch_size = batch_size
-        self.recreate = recreate
+        self.max_len = 100 if max_len is None else max_len
+        self.batch_size = 128 if batch_size is None else batch_size
+        self.recreate = False if recreate is None else recreate
 
         self.dataset_dir = 'datasets'
         self.tokenizer = BertTokenizer.from_pretrained('indolem/indobert-base-uncased')
@@ -146,12 +146,13 @@ class Word2VecDataModule(pl.LightningDataModule):
             num_workers=multiprocessing.cpu_count()
         )
 
+
 class BERTDataModule(pl.LightningDataModule):
     def __init__(self, max_len=100, batch_size=32, recreate=False):
         super(BERTDataModule, self).__init__()
-        self.max_len = max_len
-        self.batch_size = batch_size
-        self.recreate = recreate
+        self.max_len = 100 if max_len is None else max_len
+        self.batch_size = 32 if batch_size is None else batch_size
+        self.recreate = False if recreate is None else recreate
 
         self.dataset_dir = 'datasets'
         self.tokenizer = BertTokenizer.from_pretrained('indolem/indobert-base-uncased')
