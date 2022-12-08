@@ -47,8 +47,8 @@ if __name__ == '__main__':
         model = ModelClass(learning_rate=learning_rate, dropout=dropout)
 
     # Initialize callbacks and progressbar
-    tensor_board_logger = TensorBoardLogger('logs', name=model_path)
-    checkpoint_callback = ModelCheckpoint(dirpath=f'./checkpoints/{model_path}', monitor='val_loss')
+    tensor_board_logger = TensorBoardLogger('logs', name=f'{model_path}/batch={batch_size}_lr={learning_rate}')
+    checkpoint_callback = ModelCheckpoint(dirpath=f'./checkpoints/{model_path}/batch={batch_size}_lr={learning_rate}', monitor='val_loss')
     early_stop_callback = EarlyStopping(monitor='val_loss', min_delta=0.00, check_on_train_epoch_end=1, patience=10)
     tqdm_progress_bar = TQDMProgressBar()
 
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     trainer = pl.Trainer(
         accelerator='gpu',
         max_epochs=2,
-        default_root_dir=f'./checkpoints/{model_path}',
+        default_root_dir=f'./checkpoints/{model_path}/batch={batch_size}_lr={learning_rate}',
         callbacks=[checkpoint_callback, early_stop_callback, tqdm_progress_bar],
         logger=tensor_board_logger,
         log_every_n_steps=5,
@@ -66,4 +66,4 @@ if __name__ == '__main__':
     trainer.fit(model, datamodule=data_module)
     trainer.test(datamodule=data_module, ckpt_path='best')
 
-    save_graph(f'logs/{model_path}', model_name, f'results/{model_path}')
+    save_graph(f'logs/{model_path}/batch={batch_size}_lr={learning_rate}', model_name, f'results/{model_path}/batch={batch_size}_lr={learning_rate}', batch_size, learning_rate)
