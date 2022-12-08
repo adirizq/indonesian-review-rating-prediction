@@ -1,14 +1,17 @@
-import argparse
-import importlib
 import pytorch_lightning as pl
+import importlib
+import argparse
 
-from pytorch_lightning.loggers import TensorBoardLogger
-from pytorch_lightning.callbacks import ModelCheckpoint, TQDMProgressBar, EarlyStopping
-from utils.preprocess import Word2VecDataModule, BERTDataModule
 from utils.process_tensorboard_log import save_graph
+from utils.preprocess import Word2VecDataModule, BERTDataModule
+from pytorch_lightning.callbacks import ModelCheckpoint, TQDMProgressBar, EarlyStopping
+from pytorch_lightning.loggers import TensorBoardLogger
+from textwrap import dedent
+
 
 if __name__ == '__main__':
     # Seed for reproducible results
+    print("")
     pl.seed_everything(42, workers=True)
 
     # Arguments for training
@@ -28,6 +31,20 @@ if __name__ == '__main__':
     dropout = config['dropout']
     batch_size = config['batch_size'] if config['batch_size'] is not None else 128 if model_name in ['LSTM', 'CNN 1D', 'CNN 2D'] else 32
     learning_rate = config['learning_rate'] if config['learning_rate'] is not None else 1e-3 if model_name in ['LSTM', 'CNN 1D', 'CNN 2D'] else 2e-5
+
+    print(dedent(f'''
+    -----------------------------------
+     Training Information        
+    -----------------------------------
+     Name                | Value       
+    -----------------------------------
+     Model Name          | {model_name}
+     Batch Size          | {batch_size}
+     Learning Rate       | {learning_rate}
+     Input Max Length    | {max_length}
+     Dropout             | {dropout}   
+    -----------------------------------
+    '''))
 
     # Create model path and model class name
     model_path = model_name.lower().replace(' ', '_')
@@ -55,7 +72,7 @@ if __name__ == '__main__':
     # Initialize Trainer
     trainer = pl.Trainer(
         accelerator='gpu',
-        max_epochs=2,
+        max_epochs=100,
         default_root_dir=f'./checkpoints/{model_path}/batch={batch_size}_lr={learning_rate}',
         callbacks=[checkpoint_callback, early_stop_callback, tqdm_progress_bar],
         logger=tensor_board_logger,
