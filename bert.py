@@ -7,7 +7,7 @@ from utils.process_tensorboard_log import save_graph
 from models.bert import Bert
 
 if __name__ == '__main__':
-    pl.seed_everything(99, workers=True)
+    pl.seed_everything(42, workers=True)
 
     data_module = ReviewDataModule(max_len=100, batch_size=32)
 
@@ -24,7 +24,8 @@ if __name__ == '__main__':
         default_root_dir="./checkpoints/bert",
         callbacks=[checkpoint_callback, early_stop_callback, tqdm_progress_bar],
         logger=tensor_board_logger,
-        log_every_n_steps=5
+        log_every_n_steps=5,
+        deterministic=True
     )
 
     trainer.fit(model, datamodule=data_module)
