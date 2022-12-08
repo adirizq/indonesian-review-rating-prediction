@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
 
-def save_graph(log_path, model_name, save_path):
+def save_graph(log_path, model_name, save_path, batch, lr):
     data = pd.DataFrame({"metric": [], "value": [], "step": []})
 
     directory_list = list()
@@ -64,7 +64,7 @@ def save_graph(log_path, model_name, save_path):
     loss.set_ylabel('Loss')
     loss.legend()
 
-    fig.suptitle(f'{model_name}\nTest Accuracy: {test_acc}%, Test Loss: {test_loss}\n\n', fontsize='16')
+    fig.suptitle(f'{model_name}\nbatch = {batch}, lr = {lr}\nTest Accuracy: {test_acc}%, Test Loss: {test_loss}\n\n', fontsize='16')
 
     plt.tight_layout()
     plt.savefig(f'{save_path}/{directory_list[0]["ver"]}.png')
