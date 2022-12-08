@@ -8,14 +8,14 @@ from torchmetrics.classification import MulticlassAccuracy, MulticlassF1Score
 from transformers import BertModel
 
 
-class Bert(pl.LightningModule):
+class BERT(pl.LightningModule):
     def __init__(self,
                  num_classes=5,
                  learning_rate=1e-3,
                  dropout=0.5,
                  ) -> None:
 
-        super(Bert, self).__init__()
+        super(BERT, self).__init__()
 
         self.lr = learning_rate
         self.output_dim = num_classes

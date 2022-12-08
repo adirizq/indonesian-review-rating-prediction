@@ -4,14 +4,14 @@ from pytorch_lightning.loggers import TensorBoardLogger
 from pytorch_lightning.callbacks import ModelCheckpoint, TQDMProgressBar, EarlyStopping
 from utils.preprocess_bert import ReviewDataModule
 from utils.process_tensorboard_log import save_graph
-from models.bert_cnn_2d import BertCNN2D
+from models.bert_cnn_2d import BERTCNN2D
 
 if __name__ == '__main__':
     pl.seed_everything(42, workers=True)
 
     data_module = ReviewDataModule(max_len=100, batch_size=32)
 
-    model = BertCNN2D(learning_rate=2e-5)
+    model = BERTCNN2D(learning_rate=2e-5)
 
     tensor_board_logger = TensorBoardLogger('logs', name='bert_cnn_2d')
     checkpoint_callback = ModelCheckpoint(dirpath='./checkpoints/bert_cnn_2d', monitor='val_loss')

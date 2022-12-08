@@ -8,7 +8,7 @@ from torchmetrics.classification import MulticlassAccuracy, MulticlassF1Score
 from transformers import BertModel
 
 
-class BertCNN1D(pl.LightningModule):
+class BERTCNN1D(pl.LightningModule):
     def __init__(self,
                  num_classes=5,
                  learning_rate=1e-3,
@@ -18,7 +18,7 @@ class BertCNN1D(pl.LightningModule):
                  window_sizes=[3, 4, 5],
                  ) -> None:
 
-        super(BertCNN1D, self).__init__()
+        super(BERTCNN1D, self).__init__()
 
         self.lr = learning_rate
         self.embedding_size = embedding_size
