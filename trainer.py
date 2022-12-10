@@ -21,6 +21,7 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--batch_size', type=int, required=False, help='Batch size, default [32] for bert-based models and [128] for non-bert-based models')
     parser.add_argument('-l', '--max_length', type=int, default=100, required=False, help='Input max length, default [100]')
     parser.add_argument('-d', '--dropout', type=float, default=0.5, required=False, help='Dropout, default [0.5]')
+    parser.add_argument('-p', '--patience', type=int, default=10, required=False, help='Early stopping patience, default [10]')
 
     args = parser.parse_args()
     config = vars(args)
@@ -29,6 +30,7 @@ if __name__ == '__main__':
     model_name = config['model']
     max_length = config['max_length']
     dropout = config['dropout']
+    patience = config['patience']
     batch_size = config['batch_size'] if config['batch_size'] is not None else 128 if model_name in ['LSTM', 'CNN 1D', 'CNN 2D'] else 32
     learning_rate = config['learning_rate'] if config['learning_rate'] is not None else 1e-3 if model_name in ['LSTM', 'CNN 1D', 'CNN 2D'] else 2e-5
 
@@ -43,6 +45,7 @@ if __name__ == '__main__':
      Learning Rate       | {learning_rate}
      Input Max Length    | {max_length}
      Dropout             | {dropout}   
+     Patience            | {patience}   
     -----------------------------------
     '''))
 
@@ -66,7 +69,7 @@ if __name__ == '__main__':
     # Initialize callbacks and progressbar
     tensor_board_logger = TensorBoardLogger('logs', name=f'{model_path}/batch={batch_size}_lr={learning_rate}')
     checkpoint_callback = ModelCheckpoint(dirpath=f'./checkpoints/{model_path}/batch={batch_size}_lr={learning_rate}', monitor='val_loss')
-    early_stop_callback = EarlyStopping(monitor='val_loss', min_delta=0.00, check_on_train_epoch_end=1, patience=10)
+    early_stop_callback = EarlyStopping(monitor='val_loss', min_delta=0.00, check_on_train_epoch_end=1, patience=patience)
     tqdm_progress_bar = TQDMProgressBar()
 
     # Initialize Trainer
